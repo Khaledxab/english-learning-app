@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "681be5a60fdd58492344f895"
+  },
+  "name": "General English",
+  "description": "A comprehensive course for general English proficiency.",
+  "level": "Intermediate",
+  "createdAt": {
+    "$date": "2025-05-07T22:58:46.289Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "681be5a60fdd58492344f896"
+  },
+  "name": "Business English",
+  "description": "English for professional and business contexts.",
+  "level": "Advanced",
+  "createdAt": {
+    "$date": "2025-05-07T22:58:46.289Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "681be5a60fdd58492344f897"
+  },
+  "name": "Kids Program",
+  "description": "Fun and engaging English learning for children.",
+  "level": "Beginner",
+  "createdAt": {
+    "$date": "2025-05-07T22:58:46.290Z"
+  },
+  "__v": 0
+}]

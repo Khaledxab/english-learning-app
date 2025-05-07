@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "681bb582b9923869dac05fc1"
+  },
+  "firstName": "John",
+  "lastName": "Doe",
+  "username": "johndoe",
+  "email": "john.doe@example.com",
+  "password": "$2b$10$7N3MRkGtyaPxf0VlxMRb0eecZMrrIFUhACQ2OYCGHo9VcMocCDnXS",
+  "points": 5500,
+  "trophies": 2,
+  "correctAnswers": {
+    "vocabulary": 6,
+    "grammar": 14
+  },
+  "wrongAnswers": {
+    "vocabulary": 14,
+    "grammar": 19
+  },
+  "consecutiveCorrectAnswers": 1,
+  "createdAt": {
+    "$date": "2025-05-07T19:33:22.895Z"
+  },
+  "__v": 0
+}]

@@ -1,0 +1,45 @@
+[{
+  "_id": {
+    "$oid": "681bbbb8d0429edbb0ed8d21"
+  },
+  "user": {
+    "$oid": "681bb582b9923869dac05fc1"
+  },
+  "type": "trophy",
+  "description": "Trophy #1 for answering 10 questions correctly!",
+  "points": 0,
+  "earnedAt": {
+    "$date": "2025-05-07T19:59:52.339Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "681bbbb8d0429edbb0ed8d24"
+  },
+  "user": {
+    "$oid": "681bb582b9923869dac05fc1"
+  },
+  "type": "point_milestone",
+  "description": "Reached 10,000 points!",
+  "points": 10000,
+  "earnedAt": {
+    "$date": "2025-05-07T19:59:52.430Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "681be4473d0e7e7958429b15"
+  },
+  "user": {
+    "$oid": "681bb582b9923869dac05fc1"
+  },
+  "type": "trophy",
+  "description": "Trophy #2 for answering 20 questions correctly!",
+  "points": 0,
+  "earnedAt": {
+    "$date": "2025-05-07T22:52:55.357Z"
+  },
+  "__v": 0
+}]
