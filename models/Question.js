@@ -1,3 +1,4 @@
+// models/Question.js - Update the schema
 const mongoose = require('mongoose');
 
 const QuestionSchema = new mongoose.Schema({
@@ -11,9 +12,16 @@ const QuestionSchema = new mongoose.Schema({
     required: [true, 'Please provide question type'],
     enum: ['vocabulary', 'grammar']
   },
+  // Update level to reference the Level model
   level: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Level',
+    required: true
+  },
+  // Add difficulty rating for granular difficulty within a level
+  difficultyRating: {
     type: Number,
-    required: [true, 'Please provide question level'],
+    required: [true, 'Please provide question difficulty rating'],
     min: 1,
     max: 100
   },
@@ -31,8 +39,9 @@ const QuestionSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide explanation for correct answer']
   },
+  // Keep course for backward compatibility and easier querying
   course: {
-    type: mongoose.Schema.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
     required: true
   },

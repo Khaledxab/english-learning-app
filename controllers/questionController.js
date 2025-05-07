@@ -5,6 +5,8 @@ const Achievement = require('../models/Achievement');
 const { questionSelector } = require('../utils/questionSelector');
 const { trackAchievements } = require('../utils/achievementTracker');
 const config = require('../config/config');
+const Level = require('../models/Level');
+const UserProgress = require('../models/UserProgress');
 
 // @desc    Get questions for a course
 // @route   GET /api/questions/course/:courseId
@@ -73,7 +75,7 @@ exports.submitAnswer = async (req, res) => {
     const questionId = req.params.questionId;
     
     // Find the question
-    const question = await Question.findById(questionId);
+    const question = await Question.findById(questionId).populate('level');
     
     if (!question) {
       return res.status(404).json({ message: 'Question not found' });
@@ -88,6 +90,8 @@ exports.submitAnswer = async (req, res) => {
     
     const isCorrect = selectedOption.isCorrect;
     const questionType = question.type;
+    const levelId = question.level._id;
+    const courseId = question.course;
     
     // Update user stats
     const user = await User.findById(req.user.id);
@@ -109,6 +113,78 @@ exports.submitAnswer = async (req, res) => {
     
     await user.save();
     
+    // Update level progress
+    let userProgress = await UserProgress.findOne({
+      user: req.user.id,
+      level: levelId
+    });
+    
+    if (!userProgress) {
+      userProgress = new UserProgress({
+        user: req.user.id,
+        course: courseId,
+        level: levelId,
+        unlocked: true,
+        completed: false,
+        correctAnswers: 0,
+        totalAnswers: 0,
+        questionsPassed: []
+      });
+    }
+    
+    userProgress.totalAnswers += 1;
+    
+    if (isCorrect) {
+      userProgress.correctAnswers += 1;
+      
+      // Add to passed questions if not already there
+      if (!userProgress.questionsPassed.includes(questionId)) {
+        userProgress.questionsPassed.push(questionId);
+      }
+    }
+    
+    // Check if level is completed
+    const totalQuestions = await Question.countDocuments({ level: levelId });
+    const completionThreshold = Math.ceil(totalQuestions * 0.7); // 70% of questions
+    
+    if (userProgress.questionsPassed.length >= completionThreshold && !userProgress.completed) {
+      userProgress.completed = true;
+      
+      // Unlock next level
+      const currentLevel = await Level.findById(levelId);
+      const nextLevel = await Level.findOne({
+        course: currentLevel.course,
+        order: currentLevel.order + 1
+      });
+      
+      if (nextLevel) {
+        // Create or update next level progress
+        let nextLevelProgress = await UserProgress.findOne({
+          user: req.user.id,
+          level: nextLevel._id
+        });
+        
+        if (!nextLevelProgress) {
+          nextLevelProgress = new UserProgress({
+            user: req.user.id,
+            course: nextLevel.course,
+            level: nextLevel._id,
+            unlocked: true,
+            completed: false,
+            correctAnswers: 0,
+            totalAnswers: 0,
+            questionsPassed: []
+          });
+        } else {
+          nextLevelProgress.unlocked = true;
+        }
+        
+        await nextLevelProgress.save();
+      }
+    }
+    
+    await userProgress.save();
+    
     // Check and update achievements
     const achievements = await trackAchievements(user);
     
@@ -122,6 +198,13 @@ exports.submitAnswer = async (req, res) => {
           trophies: user.trophies,
           correctAnswers: user.correctAnswers,
           wrongAnswers: user.wrongAnswers
+        },
+        levelProgress: {
+          isCompleted: userProgress.completed,
+          correctAnswers: userProgress.correctAnswers,
+          totalAnswers: userProgress.totalAnswers,
+          questionsCompleted: userProgress.questionsPassed.length,
+          totalQuestions
         },
         newAchievements: achievements
       }
@@ -205,6 +288,152 @@ exports.createQuestion = async (req, res) => {
       message: 'Server error',
       error: error.message 
     });
+  }
+};
+
+
+exports.getQuestionsForLevel = async (req, res) => {
+  try {
+    const { levelId } = req.params;
+    
+    // Check if level exists
+    const level = await Level.findById(levelId);
+    if (!level) {
+      return res.status(404).json({ 
+        success: false,
+        message: 'Level not found' 
+      });
+    }
+    
+    // Check if user has unlocked this level
+    const userProgress = await UserProgress.findOne({
+      user: req.user.id,
+      level: levelId
+    });
+    
+    if (!userProgress || !userProgress.unlocked) {
+      return res.status(403).json({ 
+        success: false,
+        message: 'This level is locked. Complete previous levels to unlock.' 
+      });
+    }
+    
+    // Get questions for this level
+    const questions = await Question.find({ level: levelId });
+    
+    // Get questions passed by user
+    const questionsPassed = userProgress.questionsPassed || [];
+    
+    // Sanitize questions (remove correct answers)
+    const sanitizedQuestions = questions.map(question => {
+      const isPassed = questionsPassed.includes(question._id);
+      
+      return {
+        _id: question._id,
+        text: question.text,
+        type: question.type,
+        difficultyRating: question.difficultyRating,
+        options: question.options.map(option => ({
+          _id: option._id,
+          text: option.text
+        })),
+        isPassed
+      };
+    });
+    
+    res.status(200).json({
+      success: true,
+      count: sanitizedQuestions.length,
+      data: sanitizedQuestions
+    });
+  } catch (error) {
+    console.error('Error in getQuestionsForLevel:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Server error',
+      error: error.message 
+    });
+  }
+};
+
+// Add to controllers/questionController.js
+// After updating user stats in submitAnswer function
+// Check and update level progression
+const updateLevelProgress = async (userId, question) => {
+  try {
+    // Find the question to get its level
+    const fullQuestion = await Question.findById(question._id).populate('level');
+    const levelId = fullQuestion.level._id;
+    
+    // Update user progress for this level
+    let userProgress = await UserProgress.findOne({
+      user: userId,
+      level: levelId
+    });
+    
+    if (!userProgress) {
+      // Initialize progress if it doesn't exist
+      userProgress = new UserProgress({
+        user: userId,
+        course: fullQuestion.level.course,
+        level: levelId,
+        unlocked: true, // Initial level starts unlocked
+      });
+    }
+    
+    // Update progress
+    if (isCorrect) {
+      userProgress.correctAnswers += 1;
+      
+      // Add to passed questions if not already there
+      if (!userProgress.questionsPassed.includes(question._id)) {
+        userProgress.questionsPassed.push(question._id);
+      }
+    }
+    userProgress.totalAnswers += 1;
+    userProgress.lastAccessed = Date.now();
+    
+    // Check if level is completed
+    const levelQuestions = await Question.countDocuments({ level: levelId });
+    const completionThreshold = Math.ceil(levelQuestions * 0.7); // 70% of questions
+    
+    if (userProgress.questionsPassed.length >= completionThreshold) {
+      userProgress.completed = true;
+      
+      // Unlock next level
+      const currentLevel = await Level.findById(levelId);
+      const nextLevel = await Level.findOne({
+        course: currentLevel.course,
+        order: currentLevel.order + 1
+      });
+      
+      if (nextLevel) {
+        // Create or update next level progress
+        let nextLevelProgress = await UserProgress.findOne({
+          user: userId,
+          level: nextLevel._id
+        });
+        
+        if (!nextLevelProgress) {
+          nextLevelProgress = new UserProgress({
+            user: userId,
+            course: nextLevel.course,
+            level: nextLevel._id,
+            unlocked: true
+          });
+        } else {
+          nextLevelProgress.unlocked = true;
+        }
+        
+        await nextLevelProgress.save();
+      }
+    }
+    
+    await userProgress.save();
+    return userProgress;
+  } catch (error) {
+    console.error('Error updating level progress:', error);
+    throw error;
   }
 };
 

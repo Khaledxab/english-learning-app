@@ -2,6 +2,7 @@
 const express = require('express');
 const { 
   getQuestionsForCourse, 
+  getQuestionsForLevel,
   submitAnswer,
   createQuestion,
   createQuestionsBatch 
@@ -57,11 +58,13 @@ router.get('/debug', async (req, res) => {
 
 // Your existing routes
 router.get('/course/:courseId', protect, getQuestionsForCourse);
+router.get('/level/:levelId', protect, getQuestionsForLevel); 
+
 router.post('/:questionId/answer', protect, submitAnswer);
 
 
-router.post('/', protect, createQuestion); // Add this new route
-router.post('/batch', protect, createQuestionsBatch); // Add this batch route
+router.post('/', protect, createQuestion); 
+router.post('/batch', protect, createQuestionsBatch); 
 
 
 module.exports = router;
