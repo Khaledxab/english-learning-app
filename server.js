@@ -44,6 +44,9 @@ app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 app.use('/api/questions', require('./routes/questionRoutes'));
 
+app.use('/api/levels', require('./routes/levelRoutes'));
+app.use('/api/progress', require('./routes/progressRoutes'));
+
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./config/swagger');
 
