@@ -1,8 +1,8 @@
 {
   "info": {
-    "_postman_id": "c8e9c6a1-7f62-4c6b-8b48-3c6d9ac97b2e",
-    "name": "English Learning App",
-    "description": "API collection for the English Learning App backend",
+    "_postman_id": "c8e9c6a1-7f62-4c6b-8b48-3c6d9ac97b3e",
+    "name": "English Learning App - Roadmap Edition",
+    "description": "API collection for the English Learning App backend with roadmap and level progression",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -23,6 +23,11 @@
     },
     {
       "key": "courseId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "levelId",
       "value": "",
       "type": "string"
     },
@@ -257,6 +262,58 @@
             "description": "Get all user achievements including trophies and points milestones"
           },
           "response": []
+        },
+        {
+          "name": "Get User Progress Summary",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/progress",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "progress"
+              ]
+            },
+            "description": "Get summary of user's progress across all courses and levels"
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Course Progress",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/progress/course/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "progress",
+                "course",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Get detailed progress for a specific course"
+          },
+          "response": []
         }
       ],
       "description": "User profile related endpoints"
@@ -327,15 +384,184 @@
             "description": "Get details of a specific course"
           },
           "response": []
+        },
+        {
+          "name": "Create Course",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type", 
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Exam Preparation\",\n    \"description\": \"Prepare for English proficiency exams like TOEFL, IELTS, and Cambridge.\",\n    \"level\": \"Advanced\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/courses",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "courses"
+              ]
+            },
+            "description": "Create a new course. Level must be one of: 'Beginner', 'Intermediate', or 'Advanced'."
+          },
+          "response": []
         }
       ],
       "description": "Course related endpoints"
     },
     {
+      "name": "Levels",
+      "item": [
+        {
+          "name": "Get All Levels for Course",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = JSON.parse(responseBody);",
+                  "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('levelId', jsonData.data[0]._id);",
+                  "    console.log('Level ID saved to variable');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/course/{{courseId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "levels",
+                "course",
+                "{{courseId}}"
+              ]
+            },
+            "description": "Get all levels for a specific course including unlock status"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Level Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/{{levelId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "levels",
+                "{{levelId}}"
+              ]
+            },
+            "description": "Get detailed information about a specific level"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"course\": \"{{courseId}}\",\n    \"number\": 1,\n    \"name\": \"Beginner Basics\",\n    \"description\": \"Learn foundational English skills\",\n    \"requiredPoints\": 0,\n    \"unlockRequirements\": {\n        \"requiredCorrectAnswers\": 0\n    },\n    \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/levels",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "levels"
+              ]
+            },
+            "description": "Create a new level for a course (admin only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Level",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated Level Name\",\n    \"description\": \"Updated level description\",\n    \"requiredPoints\": 1000,\n    \"order\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/levels/{{levelId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "levels",
+                "{{levelId}}"
+              ]
+            },
+            "description": "Update a level (admin only)"
+          },
+          "response": []
+        }
+      ],
+      "description": "Level management endpoints"
+    },
+    {
       "name": "Questions",
       "item": [
         {
-          "name": "Get Questions For Course",
+          "name": "Get Questions For Level",
           "event": [
             {
               "listen": "test",
@@ -363,18 +589,18 @@
               }
             ],
             "url": {
-              "raw": "{{baseUrl}}/api/questions/course/{{courseId}}",
+              "raw": "{{baseUrl}}/api/questions/level/{{levelId}}",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
                 "api",
                 "questions",
-                "course",
-                "{{courseId}}"
+                "level",
+                "{{levelId}}"
               ]
             },
-            "description": "Get adaptive questions for a specific course"
+            "description": "Get questions for a specific level"
           },
           "response": []
         },
@@ -411,9 +637,127 @@
             "description": "Submit an answer for a question and get feedback"
           },
           "response": []
+        },
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"text\": \"What is the past tense of 'run'?\",\n    \"type\": \"grammar\",\n    \"level\": \"{{levelId}}\",\n    \"difficultyRating\": 25,\n    \"options\": [\n        {\n            \"text\": \"runned\",\n            \"isCorrect\": false\n        },\n        {\n            \"text\": \"ran\",\n            \"isCorrect\": true\n        },\n        {\n            \"text\": \"runed\",\n            \"isCorrect\": false\n        },\n        {\n            \"text\": \"running\",\n            \"isCorrect\": false\n        }\n    ],\n    \"explanation\": \"The past tense of 'run' is 'ran'. It's an irregular verb.\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/questions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "questions"
+              ]
+            },
+            "description": "Create a new question for a specific level. Type must be either 'vocabulary' or 'grammar'. DifficultyRating must be between 1 and 100. Must have exactly one correct option."
+          },
+          "response": []
         }
       ],
       "description": "Question related endpoints"
+    },
+    {
+      "name": "User Progress",
+      "item": [
+        {
+          "name": "Get Progress for Level",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/progress/level/{{levelId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "progress",
+                "level",
+                "{{levelId}}"
+              ]
+            },
+            "description": "Get user's progress for a specific level"
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Level Progress",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/progress/level/{{levelId}}/reset",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "progress",
+                "level",
+                "{{levelId}}",
+                "reset"
+              ]
+            },
+            "description": "Reset user's progress for a specific level"
+          },
+          "response": []
+        },
+        {
+          "name": "Check Level Completion Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/progress/level/{{levelId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "progress",
+                "level",
+                "{{levelId}}",
+                "status"
+              ]
+            },
+            "description": "Check if a level is completed and what's unlocked next"
+          },
+          "response": []
+        }
+      ],
+      "description": "User progress tracking endpoints"
     }
   ]
 }
