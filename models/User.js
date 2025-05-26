@@ -1,3 +1,4 @@
+// models/User.js
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -33,6 +34,10 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Please provide password'],
     minlength: 6,
     select: false
+  },
+  verified: {
+    type: Boolean,
+    default: false
   },
   points: {
     type: Number,
