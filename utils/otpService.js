@@ -6,8 +6,8 @@ const otpStore = {};
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'joseph.belhadj@gmail.com',
-        pass: 'govd wuqj vxeg rprn',
+        user: 'inesghrairi28@gmail.com',
+        pass: 'nvxl hapf uzvn rxcb',
     },
 });
 
@@ -17,7 +17,7 @@ exports.sendOtp = (email) => {
     otpStore[email] = otp;
 
     const mailOptions = {
-        from: 'joseph.belhadj@gmail.com',
+        from: 'inesghrairi28@gmail.com',
         to: email,
         subject: 'Your OTP Code',
         text: `Your OTP code is ${otp}. It is valid for 5 minutes.`,
