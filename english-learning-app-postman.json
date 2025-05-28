@@ -1,763 +1,1023 @@
 {
-  "info": {
-    "_postman_id": "c8e9c6a1-7f62-4c6b-8b48-3c6d9ac97b3e",
-    "name": "English Learning App - Roadmap Edition",
-    "description": "API collection for the English Learning App backend with roadmap and level progression",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://localhost:5000",
-      "type": "string"
-    },
-    {
-      "key": "token",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "userId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "courseId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "levelId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "questionId",
-      "value": "",
-      "type": "string"
-    },
-    {
-      "key": "optionId",
-      "value": "",
-      "type": "string"
-    }
-  ],
-  "item": [
-    {
-      "name": "Authentication",
-      "item": [
-        {
-          "name": "Register User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "if (jsonData.success && jsonData.token) {",
-                  "    pm.collectionVariables.set('token', jsonData.token);",
-                  "    console.log('Token saved to variable');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"username\": \"johndoe\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/register",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "register"
-              ]
-            },
-            "description": "Register a new user with the application"
-          },
-          "response": []
-        },
-        {
-          "name": "Login User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "if (jsonData.success && jsonData.token) {",
-                  "    pm.collectionVariables.set('token', jsonData.token);",
-                  "    console.log('Token saved to variable');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"username\": \"johndoe\",\n    \"password\": \"password123\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            },
-            "description": "Login a user with username and password"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Current User",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "if (jsonData.success && jsonData.data && jsonData.data._id) {",
-                  "    pm.collectionVariables.set('userId', jsonData.data._id);",
-                  "    console.log('User ID saved to variable');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/me",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "auth",
-                "me"
-              ]
-            },
-            "description": "Get the profile of the currently logged in user"
-          },
-          "response": []
-        }
-      ],
-      "description": "Authentication related endpoints"
-    },
-    {
-      "name": "User Profile",
-      "item": [
-        {
-          "name": "Get User Profile",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "profile"
-              ]
-            },
-            "description": "Get the user profile with achievements"
-          },
-          "response": []
-        },
-        {
-          "name": "Update User Profile",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe Updated\",\n    \"email\": \"john.updated@example.com\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/users/profile",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "profile"
-              ]
-            },
-            "description": "Update user profile information"
-          },
-          "response": []
-        },
-        {
-          "name": "Get User Achievements",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users/achievements",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "achievements"
-              ]
-            },
-            "description": "Get all user achievements including trophies and points milestones"
-          },
-          "response": []
-        },
-        {
-          "name": "Get User Progress Summary",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users/progress",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "progress"
-              ]
-            },
-            "description": "Get summary of user's progress across all courses and levels"
-          },
-          "response": []
-        },
-        {
-          "name": "Get User Course Progress",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/users/progress/course/{{courseId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "users",
-                "progress",
-                "course",
-                "{{courseId}}"
-              ]
-            },
-            "description": "Get detailed progress for a specific course"
-          },
-          "response": []
-        }
-      ],
-      "description": "User profile related endpoints"
-    },
-    {
-      "name": "Courses",
-      "item": [
-        {
-          "name": "Get All Courses",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
-                  "    pm.collectionVariables.set('courseId', jsonData.data[0]._id);",
-                  "    console.log('Course ID saved to variable');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/courses",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "courses"
-              ]
-            },
-            "description": "Get all available courses"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Single Course",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/courses/{{courseId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "courses",
-                "{{courseId}}"
-              ]
-            },
-            "description": "Get details of a specific course"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Course",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type", 
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Exam Preparation\",\n    \"description\": \"Prepare for English proficiency exams like TOEFL, IELTS, and Cambridge.\",\n    \"level\": \"Advanced\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/courses",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "courses"
-              ]
-            },
-            "description": "Create a new course. Level must be one of: 'Beginner', 'Intermediate', or 'Advanced'."
-          },
-          "response": []
-        }
-      ],
-      "description": "Course related endpoints"
-    },
-    {
-      "name": "Levels",
-      "item": [
-        {
-          "name": "Get All Levels for Course",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
-                  "    pm.collectionVariables.set('levelId', jsonData.data[0]._id);",
-                  "    console.log('Level ID saved to variable');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/levels/course/{{courseId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "levels",
-                "course",
-                "{{courseId}}"
-              ]
-            },
-            "description": "Get all levels for a specific course including unlock status"
-          },
-          "response": []
-        },
-        {
-          "name": "Get Level Details",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/levels/{{levelId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "levels",
-                "{{levelId}}"
-              ]
-            },
-            "description": "Get detailed information about a specific level"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Level",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"course\": \"{{courseId}}\",\n    \"number\": 1,\n    \"name\": \"Beginner Basics\",\n    \"description\": \"Learn foundational English skills\",\n    \"requiredPoints\": 0,\n    \"unlockRequirements\": {\n        \"requiredCorrectAnswers\": 0\n    },\n    \"order\": 1\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/levels",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "levels"
-              ]
-            },
-            "description": "Create a new level for a course (admin only)"
-          },
-          "response": []
-        },
-        {
-          "name": "Update Level",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"name\": \"Updated Level Name\",\n    \"description\": \"Updated level description\",\n    \"requiredPoints\": 1000,\n    \"order\": 1\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/levels/{{levelId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "levels",
-                "{{levelId}}"
-              ]
-            },
-            "description": "Update a level (admin only)"
-          },
-          "response": []
-        }
-      ],
-      "description": "Level management endpoints"
-    },
-    {
-      "name": "Questions",
-      "item": [
-        {
-          "name": "Get Questions For Level",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "var jsonData = JSON.parse(responseBody);",
-                  "if (jsonData.success && jsonData.data && jsonData.data.length > 0) {",
-                  "    pm.collectionVariables.set('questionId', jsonData.data[0]._id);",
-                  "    if (jsonData.data[0].options && jsonData.data[0].options.length > 0) {",
-                  "        pm.collectionVariables.set('optionId', jsonData.data[0].options[0]._id);",
-                  "    }",
-                  "    console.log('Question ID and Option ID saved to variables');",
-                  "}"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/questions/level/{{levelId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "questions",
-                "level",
-                "{{levelId}}"
-              ]
-            },
-            "description": "Get questions for a specific level"
-          },
-          "response": []
-        },
-        {
-          "name": "Submit Answer",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"optionId\": \"{{optionId}}\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/questions/{{questionId}}/answer",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "questions",
-                "{{questionId}}",
-                "answer"
-              ]
-            },
-            "description": "Submit an answer for a question and get feedback"
-          },
-          "response": []
-        },
-        {
-          "name": "Create Question",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              },
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"text\": \"What is the past tense of 'run'?\",\n    \"type\": \"grammar\",\n    \"level\": \"{{levelId}}\",\n    \"difficultyRating\": 25,\n    \"options\": [\n        {\n            \"text\": \"runned\",\n            \"isCorrect\": false\n        },\n        {\n            \"text\": \"ran\",\n            \"isCorrect\": true\n        },\n        {\n            \"text\": \"runed\",\n            \"isCorrect\": false\n        },\n        {\n            \"text\": \"running\",\n            \"isCorrect\": false\n        }\n    ],\n    \"explanation\": \"The past tense of 'run' is 'ran'. It's an irregular verb.\"\n}"
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/questions",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "questions"
-              ]
-            },
-            "description": "Create a new question for a specific level. Type must be either 'vocabulary' or 'grammar'. DifficultyRating must be between 1 and 100. Must have exactly one correct option."
-          },
-          "response": []
-        }
-      ],
-      "description": "Question related endpoints"
-    },
-    {
-      "name": "User Progress",
-      "item": [
-        {
-          "name": "Get Progress for Level",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/progress/level/{{levelId}}",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "progress",
-                "level",
-                "{{levelId}}"
-              ]
-            },
-            "description": "Get user's progress for a specific level"
-          },
-          "response": []
-        },
-        {
-          "name": "Reset Level Progress",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/progress/level/{{levelId}}/reset",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "progress",
-                "level",
-                "{{levelId}}",
-                "reset"
-              ]
-            },
-            "description": "Reset user's progress for a specific level"
-          },
-          "response": []
-        },
-        {
-          "name": "Check Level Completion Status",
-          "request": {
-            "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{token}}"
-              }
-            ],
-            "url": {
-              "raw": "{{baseUrl}}/api/progress/level/{{levelId}}/status",
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "path": [
-                "api",
-                "progress",
-                "level",
-                "{{levelId}}",
-                "status"
-              ]
-            },
-            "description": "Check if a level is completed and what's unlocked next"
-          },
-          "response": []
-        }
-      ],
-      "description": "User progress tracking endpoints"
-    }
-  ]
+	"info": {
+		"_postman_id": "english-learning-app-collection",
+		"name": "English Learning App API",
+		"description": "Complete API collection for the English Learning Application with adaptive questions and level-based progression",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('jwt_token', response.token);",
+									"        pm.test('JWT token saved to environment', function () {",
+									"            pm.expect(response.token).to.be.a('string');",
+									"        });",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"username\": \"johndoe123\",\n    \"email\": \"john.doe@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						}
+					}
+				},
+				{
+					"name": "Verify OTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 201', function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"pm.test('Response contains success message', function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.message).to.include('Registration successful');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe@example.com\",\n    \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"verify-otp"
+							]
+						}
+					}
+				},
+				{
+					"name": "Resend OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john.doe@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/resend-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"resend-otp"
+							]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.token) {",
+									"        pm.environment.set('jwt_token', response.token);",
+									"        pm.test('JWT token saved to environment', function () {",
+									"            pm.expect(response.token).to.be.a('string');",
+									"        });",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"johndoe123\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Current User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 200', function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test('Response contains user data', function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.success).to.be.true;",
+									"    pm.expect(response.data).to.have.property('_id');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 User Management",
+			"item": [
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Smith\",\n    \"email\": \"john.smith@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"profile"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Username",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"johnsmith123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/update-username",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"update-username"
+							]
+						}
+					}
+				},
+				{
+					"name": "Change Password",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"currentPassword\": \"password123\",\n    \"newPassword\": \"NewPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/users/change-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"change-password"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Achievements",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/users/achievements",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"achievements"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📚 Courses",
+			"item": [
+				{
+					"name": "Get All Courses",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.length > 0) {",
+									"        pm.environment.set('course_id', response.data[0]._id);",
+									"        pm.test('Course ID saved to environment', function () {",
+									"            pm.expect(response.data[0]._id).to.be.a('string');",
+									"        });",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/courses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Single Course",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/courses/{{course_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses",
+								"{{course_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data._id) {",
+									"        pm.environment.set('new_course_id', response.data._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Advanced English\",\n    \"description\": \"Advanced level English course for professional development\",\n    \"level\": \"Advanced\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/courses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"courses"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🎯 Levels & Progress",
+			"item": [
+				{
+					"name": "Get Levels for Course",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.length > 0) {",
+									"        pm.environment.set('level_id', response.data[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/levels/course/{{course_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"levels",
+								"course",
+								"{{course_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Level Details",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/levels/{{level_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"levels",
+								"{{level_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data._id) {",
+									"        pm.environment.set('new_level_id', response.data._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"course\": \"{{course_id}}\",\n    \"number\": 1,\n    \"name\": \"Beginner Level\",\n    \"description\": \"Introduction to basic English concepts\",\n    \"requiredPoints\": 0,\n    \"unlockRequirements\": {\n        \"requiredCorrectAnswers\": 0\n    },\n    \"order\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/levels",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"levels"
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Level",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Beginner Level\",\n    \"description\": \"Updated description for basic English concepts\",\n    \"requiredPoints\": 100\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/levels/{{level_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"levels",
+								"{{level_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Level Progress",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/progress/level/{{level_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"progress",
+								"level",
+								"{{level_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Level Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/progress/level/{{level_id}}/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"progress",
+								"level",
+								"{{level_id}}",
+								"status"
+							]
+						}
+					}
+				},
+				{
+					"name": "Reset Level Progress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/progress/level/{{level_id}}/reset",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"progress",
+								"level",
+								"{{level_id}}",
+								"reset"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "❓ Questions",
+			"item": [
+				{
+					"name": "Get Questions for Course (Adaptive)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.length > 0) {",
+									"        pm.environment.set('question_id', response.data[0]._id);",
+									"        pm.environment.set('option_id', response.data[0].options[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/questions/course/{{course_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"questions",
+								"course",
+								"{{course_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Questions for Level",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.length > 0) {",
+									"        pm.environment.set('question_id', response.data[0]._id);",
+									"        pm.environment.set('option_id', response.data[0].options[0]._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/questions/level/{{level_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"questions",
+								"level",
+								"{{level_id}}"
+							]
+						}
+					}
+				},
+				{
+					"name": "Submit Question Answer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"optionId\": \"{{option_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/questions/{{question_id}}/answer",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"questions",
+								"{{question_id}}",
+								"answer"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Question",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data._id) {",
+									"        pm.environment.set('new_question_id', response.data._id);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"What is the past tense of 'go'?\",\n    \"type\": \"grammar\",\n    \"level\": \"{{level_id}}\",\n    \"difficultyRating\": 25,\n    \"options\": [\n        {\n            \"text\": \"went\",\n            \"isCorrect\": true\n        },\n        {\n            \"text\": \"goed\",\n            \"isCorrect\": false\n        },\n        {\n            \"text\": \"gone\",\n            \"isCorrect\": false\n        },\n        {\n            \"text\": \"going\",\n            \"isCorrect\": false\n        }\n    ],\n    \"explanation\": \"The past tense of 'go' is 'went'. This is an irregular verb.\",\n    \"courseId\": \"{{course_id}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/questions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"questions"
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Questions Batch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"questions\": [\n        {\n            \"text\": \"What does 'beautiful' mean?\",\n            \"type\": \"vocabulary\",\n            \"level\": \"{{level_id}}\",\n            \"difficultyRating\": 15,\n            \"options\": [\n                {\n                    \"text\": \"attractive\",\n                    \"isCorrect\": true\n                },\n                {\n                    \"text\": \"ugly\",\n                    \"isCorrect\": false\n                },\n                {\n                    \"text\": \"fast\",\n                    \"isCorrect\": false\n                },\n                {\n                    \"text\": \"loud\",\n                    \"isCorrect\": false\n                }\n            ],\n            \"explanation\": \"'Beautiful' means attractive or pleasing to look at.\",\n            \"courseId\": \"{{course_id}}\"\n        },\n        {\n            \"text\": \"Choose the correct article: ___ apple is red.\",\n            \"type\": \"grammar\",\n            \"level\": \"{{level_id}}\",\n            \"difficultyRating\": 10,\n            \"options\": [\n                {\n                    \"text\": \"The\",\n                    \"isCorrect\": true\n                },\n                {\n                    \"text\": \"A\",\n                    \"isCorrect\": false\n                },\n                {\n                    \"text\": \"An\",\n                    \"isCorrect\": false\n                },\n                {\n                    \"text\": \"No article\",\n                    \"isCorrect\": false\n                }\n            ],\n            \"explanation\": \"Use 'The' when referring to a specific apple that both speaker and listener know about.\",\n            \"courseId\": \"{{course_id}}\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/questions/batch",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"questions",
+								"batch"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🔧 Debug & Testing",
+			"item": [
+				{
+					"name": "Debug Database",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/debug-database",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"debug-database"
+							]
+						}
+					}
+				},
+				{
+					"name": "Debug Questions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/questions/debug",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"questions",
+								"debug"
+							]
+						}
+					}
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								""
+							]
+						}
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-set authorization header for protected routes",
+					"if (pm.request.url.toString().includes('/api/') && !pm.request.url.toString().includes('/auth/login') && !pm.request.url.toString().includes('/auth/register') && !pm.request.url.toString().includes('/debug')) {",
+					"    const token = pm.environment.get('jwt_token');",
+					"    if (token) {",
+					"        pm.request.headers.add({",
+					"            key: 'Authorization',",
+					"            value: 'Bearer ' + token",
+					"        });",
+					"    }",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test scripts",
+					"pm.test('Response time is less than 2000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+					"});",
+					"",
+					"// Log response for debugging",
+					"if (pm.response.code >= 400) {",
+					"    console.log('Response Body:', pm.response.text());",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "course_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "level_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "question_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "option_id",
+			"value": "",
+			"type": "string"
+		}
+	]
 }
