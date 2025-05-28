@@ -1,0 +1,61 @@
+{
+	"id": "english-learning-app-env",
+	"name": "English Learning App Environment",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "secret",
+			"enabled": true
+		},
+		{
+			"key": "course_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "level_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "question_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "option_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "new_course_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "new_level_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "new_question_id",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"_postman_variable_scope": "environment"
+}
